@@ -49,6 +49,7 @@ def process_class(class_match, file_path, line_number):
     interfaces = class_match.group(4)
 
     return ClassInfo(
+        id=None,
         name=class_name,
         file_path=file_path,
         line_number=line_number + 1,
@@ -67,7 +68,7 @@ def process_method(line, current_class, line_number, methods):
         method_name = method_match.group(4)
 
         method_info = MethodInfo(
-            class_name=current_class.name,
+            class_id=current_class.id,
             method_name=method_name,
             line_number=line_number + 1,
             return_type=return_type,

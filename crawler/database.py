@@ -48,7 +48,9 @@ def insert_class(conn, class_info):
           class_info.class_type)
     )
     conn.commit()
-    return cursor.lastrowid
+    class_id = cursor.lastrowid
+    class_info.id = class_id
+    return class_id
 
 def insert_method(conn, method_info):
     cursor = conn.cursor()
