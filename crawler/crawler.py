@@ -9,8 +9,30 @@ def parse_java_file(file_path):
     classes = []
     methods = []
 
-    class_pattern = re.compile(r'\bclass\s+(\w+)')
-    method_pattern = re.compile(r'(public|private|protected)?\s*(static)?\s*(\w+)\s+(\w+)\s*\(')
+    class_pattern = re.compile(
+        r'^(?:public\s+|protected\s+|private\s+|abstract\s+|final\s+|static\s+)*'  # Optional modifiers
+        r'class\s+(\w+)'                                                           # Class name
+        r'(?:\s+extends\s+(\w+))?'                                                 # Optional superclass
+        r'(?:\s+implements\s+([\w\s,]+))?'                                         # Optional interfaces
+    )
+
+    method_pattern = re.compile(
+        r'(public|private|protected)?\s*'  # Access modifier (optional)
+        r'(static\s+)?'                    # static keyword (optional)
+        r'([\w<>\[\]]+\s+)'                # Return type (e.g., int, String, List<String>, int[])
+        r'(\w+)\s*'                        # Method name
+        r'\('                              # Opening parenthesis of method parameters
+    )
+
+    enum_pattern = re.compile(
+        r'^(?:public\s+|protected\s+|private\s+|static\s+)*'  # Optional modifiers
+        r'enum\s+(\w+)'  # Enum name
+    )
+
+    interface_pattern = re.compile(
+        r'^(?:public\s+|protected\s+|private\s+|abstract\s+|static\s+)*'  # Optional modifiers
+        r'interface\s+(\w+)'  # Interface name
+    )
 
     current_class = None
 
