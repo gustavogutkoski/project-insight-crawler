@@ -5,34 +5,24 @@ import sys
 from models import ClassInfo, MethodInfo
 from database import create_tables, insert_class, insert_method
 
+class_pattern = re.compile(
+    r'^(?:public\s+|protected\s+|private\s+|abstract\s+|final\s+|static\s+)*'  # Optional modifiers
+    r'(class|interface|enum)\s+(\w+)'                                          # Class, Interface, or Enum name
+    r'(?:\s+extends\s+(\w+))?'                                                 # Optional superclass
+    r'(?:\s+implements\s+([\w\s,]+))?'                                         # Optional interfaces
+)
+
+method_pattern = re.compile(
+    r'(public|private|protected)?\s*'  # Access modifier (optional)
+    r'(static\s+)?'                    # static keyword (optional)
+    r'([\w<>\[\]]+\s+)'                # Return type (e.g., int, String, List<String>, int[])
+    r'(\w+)\s*'                        # Method name
+    r'\('                              # Opening parenthesis of method parameters
+)
+
 def parse_java_file(file_path):
     classes = []
     methods = []
-
-    class_pattern = re.compile(
-        r'^(?:public\s+|protected\s+|private\s+|abstract\s+|final\s+|static\s+)*'  # Optional modifiers
-        r'class\s+(\w+)'                                                           # Class name
-        r'(?:\s+extends\s+(\w+))?'                                                 # Optional superclass
-        r'(?:\s+implements\s+([\w\s,]+))?'                                         # Optional interfaces
-    )
-
-    method_pattern = re.compile(
-        r'(public|private|protected)?\s*'  # Access modifier (optional)
-        r'(static\s+)?'                    # static keyword (optional)
-        r'([\w<>\[\]]+\s+)'                # Return type (e.g., int, String, List<String>, int[])
-        r'(\w+)\s*'                        # Method name
-        r'\('                              # Opening parenthesis of method parameters
-    )
-
-    enum_pattern = re.compile(
-        r'^(?:public\s+|protected\s+|private\s+|static\s+)*'  # Optional modifiers
-        r'enum\s+(\w+)'  # Enum name
-    )
-
-    interface_pattern = re.compile(
-        r'^(?:public\s+|protected\s+|private\s+|abstract\s+|static\s+)*'  # Optional modifiers
-        r'interface\s+(\w+)'  # Interface name
-    )
 
     current_class = None
 
@@ -41,17 +31,50 @@ def parse_java_file(file_path):
             # Search for classes
             class_match = class_pattern.search(line)
             if class_match:
-                current_class = class_match.group(1)
-                classes.append(ClassInfo(name=current_class, file_path=file_path))
+                current_class = process_class(class_match, file_path, idx)
+                classes.append(current_class)
 
             # Search for methods if class found
             method_match = method_pattern.search(line)
             if method_match and current_class:
-                method_name = method_match.group(4)
-                methods.append(MethodInfo(class_name=current_class, method_name=method_name, line_number=idx + 1))
+                process_method(line, current_class, idx, methods)
 
     return classes, methods
 
+
+def process_class(class_match, file_path, line_number):
+    class_type = class_match.group(1)
+    class_name = class_match.group(2)
+    superclass = class_match.group(3)
+    interfaces = class_match.group(4)
+
+    return ClassInfo(
+        name=class_name,
+        file_path=file_path,
+        line_number=line_number + 1,
+        superclass=superclass,
+        interfaces=interfaces,
+        class_type=class_type
+    )
+
+
+def process_method(line, current_class, line_number, methods):
+    method_match = method_pattern.search(line)
+    if method_match:
+        modifier = method_match.group(1)
+        is_static = method_match.group(2) is not None
+        return_type = method_match.group(3).strip()
+        method_name = method_match.group(4)
+
+        method_info = MethodInfo(
+            class_name=current_class.name,
+            method_name=method_name,
+            line_number=line_number + 1,
+            return_type=return_type,
+            modifier=modifier,
+            is_static=is_static
+        )
+        methods.append(method_info)
 
 def crawl_project(base_path, db_path="crawler.db"):
     conn = sqlite3.connect(db_path)
