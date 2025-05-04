@@ -4,11 +4,14 @@ version = "0.1.0"
 description = "Crawler module for Project Insight"
 authors = ["Gustavo A. Gutkoski <gustavogutkoski2609@gmail.com>"]
 readme = "README.md"
-packages = [{ include = "crawler" }]
 license = "MIT"
+packages = [{ include = "crawler" }]
 
 [tool.poetry.dependencies]
 python = "^3.11"
+
+[tool.poetry.urls]
+repository = "https://github.com/seu-usuario/project-insight-crawler"
 
 [build-system]
 requires = ["poetry-core"]
