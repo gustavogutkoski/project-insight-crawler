@@ -87,10 +87,12 @@ def crawl_project(base_path, db_path="crawler.db"):
                 print(f"Analyzing {file_path}...")
                 classes, methods = parse_java_file(file_path)
 
+                # Insert class and link its ID to methods
                 for cls in classes:
-                    insert_class(conn, cls)
-                for mtd in methods:
-                    insert_method(conn, mtd)
+                    class_id = insert_class(conn, cls)
+                    for mtd in methods:
+                        mtd.class_id = class_id
+                        insert_method(conn, mtd)
 
     conn.close()
     print("Crawler done!")

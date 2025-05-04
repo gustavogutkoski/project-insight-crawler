@@ -12,7 +12,7 @@ class ClassInfo:
 
 @dataclass
 class MethodInfo:
-    class_name: str
+    class_id: int
     method_name: str
     line_number: int
     return_type: Optional[str] = None
