@@ -11,7 +11,7 @@ packages = [{ include = "crawler" }]
 python = "^3.11"
 
 [tool.poetry.urls]
-repository = "https://github.com/seu-usuario/project-insight-crawler"
+repository = "https://github.com/gustavogutkoski/project-insight-crawler"
 
 [build-system]
 requires = ["poetry-core"]
