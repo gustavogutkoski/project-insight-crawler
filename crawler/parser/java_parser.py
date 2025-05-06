@@ -2,9 +2,11 @@ import os
 import re
 import sqlite3
 import sys
+from typing import Tuple, List
 
-from database import create_tables, insert_class, insert_method
-from models import ClassInfo, MethodInfo
+from crawler.database.database import create_tables, insert_class, insert_method
+from crawler.models.class_info import ClassInfo
+from crawler.models.method_info import MethodInfo
 
 class_pattern = re.compile(
     r"^(?:public\s+|protected\s+|private\s+|abstract\s+|final\s+|static\s+)*"
@@ -22,9 +24,9 @@ method_pattern = re.compile(
 )
 
 
-def parse_java_file(file_path):
-    classes = []
-    methods = []
+def parse_java_file(file_path: str) -> Tuple[List[ClassInfo], List[MethodInfo]]:
+    classes: List[ClassInfo] = []
+    methods: List[MethodInfo] = []
 
     current_class = None
 
@@ -44,7 +46,7 @@ def parse_java_file(file_path):
     return classes, methods
 
 
-def process_class(class_match, file_path, line_number):
+def process_class(class_match: re.Match[str], file_path: str, line_number: int) -> ClassInfo:
     class_type = class_match.group(1)
     class_name = class_match.group(2)
     superclass = class_match.group(3)
@@ -61,13 +63,16 @@ def process_class(class_match, file_path, line_number):
     )
 
 
-def process_method(line, current_class, line_number, methods):
+def process_method(line: str, current_class: ClassInfo, line_number: int, methods: List[MethodInfo]) -> None:
     method_match = method_pattern.search(line)
     if method_match:
         modifier = method_match.group(1)
         is_static = method_match.group(2) is not None
         return_type = method_match.group(3).strip()
         method_name = method_match.group(4)
+
+        if current_class.id is None:
+            raise ValueError(f"ID not set for class {current_class.name}")
 
         method_info = MethodInfo(
             class_id=current_class.id,
@@ -80,7 +85,7 @@ def process_method(line, current_class, line_number, methods):
         methods.append(method_info)
 
 
-def crawl_project(base_path, db_path="crawler.db"):
+def crawl_project(base_path: str, db_path: str = "crawler.db") -> None:
     conn = sqlite3.connect(db_path)
     create_tables(conn)
 

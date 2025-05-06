@@ -1,4 +1,11 @@
-def create_tables(conn):
+import sqlite3
+from typing import cast
+
+from crawler.models.class_info import ClassInfo
+from crawler.models.method_info import MethodInfo
+
+
+def create_tables(conn: sqlite3.Connection) -> None:
     cursor = conn.cursor()
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS classes (
@@ -26,7 +33,7 @@ def create_tables(conn):
     conn.commit()
 
 
-def insert_class(conn, class_info):
+def insert_class(conn: sqlite3.Connection, class_info: ClassInfo) -> int:
     cursor = conn.cursor()
     cursor.execute(
         """
@@ -36,13 +43,8 @@ def insert_class(conn, class_info):
                              superclass,
                              interfaces,
                              class_type)
-        VALUES (?,
-                ?,
-                ?,
-                ?,
-                ?,
-                ?)
-    """,
+        VALUES (?, ?, ?, ?, ?, ?)
+        """,
         (
             class_info.name,
             class_info.file_path,
@@ -54,11 +56,12 @@ def insert_class(conn, class_info):
     )
     conn.commit()
     class_id = cursor.lastrowid
+    assert class_id is not None
     class_info.id = class_id
     return class_id
 
 
-def insert_method(conn, method_info):
+def insert_method(conn: sqlite3.Connection, method_info: MethodInfo) -> None:
     cursor = conn.cursor()
     cursor.execute(
         """
@@ -68,13 +71,8 @@ def insert_method(conn, method_info):
                              return_type,
                              modifier,
                              is_static)
-        VALUES (?,
-                ?,
-                ?,
-                ?,
-                ?,
-                ?)
-    """,
+        VALUES (?, ?, ?, ?, ?, ?)
+        """,
         (
             method_info.class_id,
             method_info.method_name,
