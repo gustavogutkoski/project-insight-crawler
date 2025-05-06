@@ -2,23 +2,25 @@ import os
 import re
 import sqlite3
 import sys
-from models import ClassInfo, MethodInfo
+
 from database import create_tables, insert_class, insert_method
+from models import ClassInfo, MethodInfo
 
 class_pattern = re.compile(
-    r'^(?:public\s+|protected\s+|private\s+|abstract\s+|final\s+|static\s+)*'  # Optional modifiers
-    r'(class|interface|enum)\s+(\w+)'                                          # Class, Interface, or Enum name
-    r'(?:\s+extends\s+(\w+))?'                                                 # Optional superclass
-    r'(?:\s+implements\s+([\w\s,]+))?'                                         # Optional interfaces
+    r"^(?:public\s+|protected\s+|private\s+|abstract\s+|final\s+|static\s+)*"
+    r"(class|interface|enum)\s+(\w+)"
+    r"(?:\s+extends\s+(\w+))?"
+    r"(?:\s+implements\s+([\w\s,]+))?"
 )
 
 method_pattern = re.compile(
-    r'(public|private|protected)?\s*'  # Access modifier (optional)
-    r'(static\s+)?'                    # static keyword (optional)
-    r'([\w<>\[\]]+\s+)'                # Return type (e.g., int, String, List<String>, int[])
-    r'(\w+)\s*'                        # Method name
-    r'\('                              # Opening parenthesis of method parameters
+    r"(public|private|protected)?\s*"
+    r"(static\s+)?"
+    r"([\w<>\[\]]+\s+)"
+    r"(\w+)\s*"
+    r"\("
 )
+
 
 def parse_java_file(file_path):
     classes = []
@@ -26,7 +28,7 @@ def parse_java_file(file_path):
 
     current_class = None
 
-    with open(file_path, 'r', encoding='utf-8') as file:
+    with open(file_path, "r", encoding="utf-8") as file:
         for idx, line in enumerate(file):
             # Search for classes
             class_match = class_pattern.search(line)
@@ -55,7 +57,7 @@ def process_class(class_match, file_path, line_number):
         line_number=line_number + 1,
         superclass=superclass,
         interfaces=interfaces,
-        class_type=class_type
+        class_type=class_type,
     )
 
 
@@ -73,9 +75,10 @@ def process_method(line, current_class, line_number, methods):
             line_number=line_number + 1,
             return_type=return_type,
             modifier=modifier,
-            is_static=is_static
+            is_static=is_static,
         )
         methods.append(method_info)
+
 
 def crawl_project(base_path, db_path="crawler.db"):
     conn = sqlite3.connect(db_path)
@@ -97,6 +100,7 @@ def crawl_project(base_path, db_path="crawler.db"):
 
     conn.close()
     print("Crawler done!")
+
 
 if __name__ == "__main__":
     project_path = input("Enter the Java project path: ").strip()

@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import Optional
 
+
 @dataclass
 class ClassInfo:
     id: Optional[int]
@@ -10,6 +11,7 @@ class ClassInfo:
     superclass: Optional[str] = None
     interfaces: Optional[str] = None
     class_type: str = "class"
+
 
 @dataclass
 class MethodInfo:

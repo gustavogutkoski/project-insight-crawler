@@ -1,6 +1,6 @@
 def create_tables(conn):
     cursor = conn.cursor()
-    cursor.execute('''
+    cursor.execute("""
         CREATE TABLE IF NOT EXISTS classes (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT,
@@ -10,8 +10,8 @@ def create_tables(conn):
             interfaces TEXT,
             class_type TEXT
         )
-    ''')
-    cursor.execute('''
+    """)
+    cursor.execute("""
         CREATE TABLE IF NOT EXISTS methods (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             class_id INTEGER,
@@ -22,12 +22,14 @@ def create_tables(conn):
             is_static BOOLEAN,
             FOREIGN KEY (class_id) REFERENCES classes(id) ON DELETE CASCADE
         )
-    ''')
+    """)
     conn.commit()
+
 
 def insert_class(conn, class_info):
     cursor = conn.cursor()
-    cursor.execute('''
+    cursor.execute(
+        """
         INSERT INTO classes (name,
                              file_path,
                              line_number,
@@ -40,21 +42,26 @@ def insert_class(conn, class_info):
                 ?,
                 ?,
                 ?)
-    ''', (class_info.name,
-          class_info.file_path,
-          class_info.line_number,
-          class_info.superclass,
-          class_info.interfaces,
-          class_info.class_type)
+    """,
+        (
+            class_info.name,
+            class_info.file_path,
+            class_info.line_number,
+            class_info.superclass,
+            class_info.interfaces,
+            class_info.class_type,
+        ),
     )
     conn.commit()
     class_id = cursor.lastrowid
     class_info.id = class_id
     return class_id
 
+
 def insert_method(conn, method_info):
     cursor = conn.cursor()
-    cursor.execute('''
+    cursor.execute(
+        """
         INSERT INTO methods (class_id,
                              method_name,
                              line_number,
@@ -67,11 +74,14 @@ def insert_method(conn, method_info):
                 ?,
                 ?,
                 ?)
-    ''', (method_info.class_id,
-          method_info.method_name,
-          method_info.line_number,
-          method_info.return_type,
-          method_info.modifier,
-          method_info.is_static)
+    """,
+        (
+            method_info.class_id,
+            method_info.method_name,
+            method_info.line_number,
+            method_info.return_type,
+            method_info.modifier,
+            method_info.is_static,
+        ),
     )
     conn.commit()
