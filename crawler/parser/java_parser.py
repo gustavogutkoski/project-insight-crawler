@@ -2,7 +2,7 @@ import os
 import re
 import sqlite3
 import sys
-from typing import Tuple, List
+from typing import List, Tuple
 
 from crawler.database.database import create_tables, insert_class, insert_method
 from crawler.models.class_info import ClassInfo
@@ -63,7 +63,9 @@ def process_class(class_match: re.Match[str], file_path: str, line_number: int) 
     )
 
 
-def process_method(line: str, current_class: ClassInfo, line_number: int, methods: List[MethodInfo]) -> None:
+def process_method(
+    line: str, current_class: ClassInfo, line_number: int, methods: List[MethodInfo]
+) -> None:
     method_match = method_pattern.search(line)
     if method_match:
         modifier = method_match.group(1)

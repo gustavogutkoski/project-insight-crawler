@@ -1,5 +1,4 @@
 import sqlite3
-from typing import cast
 
 from crawler.models.class_info import ClassInfo
 from crawler.models.method_info import MethodInfo
