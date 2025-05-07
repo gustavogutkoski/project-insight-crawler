@@ -1,5 +1,5 @@
 import re
-from typing import List, Tuple, Dict
+from typing import List, Tuple
 
 from crawler.models.class_info import ClassInfo
 from crawler.models.method_info import MethodInfo
@@ -23,7 +23,7 @@ method_pattern = re.compile(
 def parse_java_file(file_path: str) -> List[Tuple[ClassInfo, List[MethodInfo]]]:
     results = []
     current_class = None
-    method_list = []
+    method_list: List[MethodInfo] = []
 
     with open(file_path, "r", encoding="utf-8") as file:
         for idx, line in enumerate(file):

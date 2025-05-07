@@ -1,7 +1,8 @@
 import os
 import sqlite3
-from crawler.parser.java_parser import parse_java_file
+
 from crawler.database.database import create_tables
+from crawler.parser.java_parser import parse_java_file
 from crawler.use_cases.save_data import save_project_data
 
 
