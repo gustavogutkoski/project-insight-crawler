@@ -1,10 +1,6 @@
-import os
 import re
-import sqlite3
-import sys
-from typing import List, Tuple
+from typing import List, Tuple, Dict
 
-from crawler.database.database import create_tables, insert_class, insert_method
 from crawler.models.class_info import ClassInfo
 from crawler.models.method_info import MethodInfo
 
@@ -24,26 +20,29 @@ method_pattern = re.compile(
 )
 
 
-def parse_java_file(file_path: str) -> Tuple[List[ClassInfo], List[MethodInfo]]:
-    classes: List[ClassInfo] = []
-    methods: List[MethodInfo] = []
-
+def parse_java_file(file_path: str) -> List[Tuple[ClassInfo, List[MethodInfo]]]:
+    results = []
     current_class = None
+    method_list = []
 
     with open(file_path, "r", encoding="utf-8") as file:
         for idx, line in enumerate(file):
-            # Search for classes
             class_match = class_pattern.search(line)
             if class_match:
+                if current_class:
+                    results.append((current_class, method_list))
                 current_class = process_class(class_match, file_path, idx)
-                classes.append(current_class)
+                method_list = []
 
-            # Search for methods if class found
             method_match = method_pattern.search(line)
             if method_match and current_class:
-                process_method(line, current_class, idx, methods)
+                method_info = process_method(line, idx)
+                method_list.append(method_info)
 
-    return classes, methods
+    if current_class:
+        results.append((current_class, method_list))
+
+    return results
 
 
 def process_class(class_match: re.Match[str], file_path: str, line_number: int) -> ClassInfo:
@@ -63,9 +62,7 @@ def process_class(class_match: re.Match[str], file_path: str, line_number: int) 
     )
 
 
-def process_method(
-    line: str, current_class: ClassInfo, line_number: int, methods: List[MethodInfo]
-) -> None:
+def process_method(line: str, line_number: int) -> MethodInfo:
     method_match = method_pattern.search(line)
     if method_match:
         modifier = method_match.group(1)
@@ -73,51 +70,13 @@ def process_method(
         return_type = method_match.group(3).strip()
         method_name = method_match.group(4)
 
-        if current_class.id is None:
-            raise ValueError(f"ID not set for class {current_class.name}")
-
-        method_info = MethodInfo(
-            class_id=current_class.id,
+        return MethodInfo(
+            class_id=None,  # será preenchido depois
             method_name=method_name,
             line_number=line_number + 1,
             return_type=return_type,
             modifier=modifier,
             is_static=is_static,
         )
-        methods.append(method_info)
 
-
-def crawl_project(base_path: str, db_path: str = "crawler.db") -> None:
-    conn = sqlite3.connect(db_path)
-    create_tables(conn)
-
-    for root, dirs, files in os.walk(base_path):
-        for file in files:
-            if file.endswith(".java"):
-                file_path = os.path.join(root, file)
-                print(f"Analyzing {file_path}...")
-                classes, methods = parse_java_file(file_path)
-
-                # Insert class and link its ID to methods
-                for cls in classes:
-                    class_id = insert_class(conn, cls)
-                    for mtd in methods:
-                        mtd.class_id = class_id
-                        insert_method(conn, mtd)
-
-    conn.close()
-    print("Crawler done!")
-
-
-if __name__ == "__main__":
-    project_path = input("Enter the Java project path: ").strip()
-
-    if not os.path.exists(project_path):
-        print(f"Error: The path '{project_path}' does not exist.")
-        sys.exit(1)
-
-    if not os.path.isdir(project_path):
-        print(f"Error: The path '{project_path}' is not a directory.")
-        sys.exit(1)
-
-    crawl_project(project_path)
+    raise ValueError("Could not parse method line")
