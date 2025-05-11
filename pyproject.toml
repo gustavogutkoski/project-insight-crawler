@@ -17,6 +17,9 @@ repository = "https://github.com/gustavogutkoski/project-insight-crawler"
 ruff = "^0.11.8"
 mypy = "^1.15.0"
 pre-commit = "^4.2.0"
+pytest = "^8.3.5"
+pytest-cov = "^6.1.1"
+poethepoet = "^0.34.0"
 
 [build-system]
 requires = ["poetry-core"]
@@ -33,3 +36,17 @@ extend-select = ["I", "E", "F", "W"]
 python_version = "3.11"
 strict = true
 ignore_missing_imports = true
+
+[tool.coverage.run]
+branch = true
+source = ["crawler"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+
+[tool.poe.tasks]
+test = "pytest -v --cov=crawler --cov-report=term-missing"
+lint = "ruff check ."
+format = "ruff format ."
+typecheck = "mypy ."
