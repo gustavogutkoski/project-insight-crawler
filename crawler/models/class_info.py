@@ -11,3 +11,7 @@ class ClassInfo:
     superclass: Optional[str] = None
     interfaces: Optional[str] = None
     class_type: str = "class"
+
+    @classmethod
+    def __str__(cls) -> str:
+        return f"{cls.name} (Line {cls.line_number})"
