@@ -5,16 +5,16 @@ from crawler.models.class_info import ClassInfo
 from crawler.models.method_info import MethodInfo
 
 class_pattern = re.compile(
-    r"^(?:public\s+|protected\s+|private\s+|abstract\s+|final\s+|static\s+)*"
+    r"^\s*(?:public\s+|protected\s+|private\s+|abstract\s+|final\s+|static\s+)*"
     r"(class|interface|enum)\s+(\w+)"
     r"(?:\s+extends\s+(\w+))?"
-    r"(?:\s+implements\s+([\w\s,]+))?"
+    r"(?:\s+implements\s+([^{]+))?"
 )
 
 method_pattern = re.compile(
     r"(public|private|protected)?\s*"
     r"(static\s+)?"
-    r"([\w<>\[\]]+\s+)"
+    r"([\w<>\[\], ?]+)\s+"
     r"(\w+)\s*"
     r"\("
 )
