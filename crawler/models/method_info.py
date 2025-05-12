@@ -10,3 +10,6 @@ class MethodInfo:
     return_type: Optional[str] = None
     modifier: Optional[str] = None
     is_static: bool = False
+
+    def __str__(self) -> str:
+        return f"{self.method_name} (Line {self.line_number})"
