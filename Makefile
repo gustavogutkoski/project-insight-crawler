@@ -9,16 +9,16 @@ help:
 	@echo "  make run path=./path/to/java/project  Run the crawler on a Java project"
 
 test:
-	pytest -v --cov=crawler --cov-report=term-missing
+	poetry run pytest -v --cov=crawler --cov-report=term-missing
 
 lint:
-	ruff check . --fix
+	poetry run ruff check . --fix
 
 format:
-	ruff format .
+	poetry run ruff format .
 
 typecheck:
-	mypy .
+	poetry run mypy .
 
 run:
-	python main.py $(path)
+	poetry run python main.py $(path)
