@@ -6,8 +6,11 @@ from crawler.models.method_info import MethodInfo
 from crawler.use_cases.save_data import save_project_data
 
 
-def test_save_project_data(db_connection: sqlite3.Connection, sample_class_info: ClassInfo,
-                           sample_method_info: MethodInfo) -> None:
+def test_save_project_data(
+        db_connection: sqlite3.Connection,
+        sample_class_info: ClassInfo,
+        sample_method_info: MethodInfo
+) -> None:
     results = [(sample_class_info, [sample_method_info])]
 
     save_project_data(db_connection, results)
@@ -24,8 +27,10 @@ def test_save_project_data(db_connection: sqlite3.Connection, sample_class_info:
     assert rows[0] == ("TestClass", "doSomething", "src/TestClass.java", 12)
 
 
-def test_save_project_data_with_no_methods(db_connection: sqlite3.Connection,
-                                           sample_class_info: ClassInfo) -> None:
+def test_save_project_data_with_no_methods(
+        db_connection: sqlite3.Connection,
+        sample_class_info: ClassInfo
+) -> None:
     results: List[Tuple[ClassInfo, List[MethodInfo]]] = [(sample_class_info, [])]
 
     save_project_data(db_connection, results)
