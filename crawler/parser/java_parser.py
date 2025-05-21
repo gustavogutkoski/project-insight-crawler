@@ -71,7 +71,7 @@ def process_method(line: str, line_number: int) -> MethodInfo:
         method_name = method_match.group(4)
 
         return MethodInfo(
-            class_id=None,  # será preenchido depois
+            class_id=None,
             method_name=method_name,
             line_number=line_number + 1,
             return_type=return_type,
