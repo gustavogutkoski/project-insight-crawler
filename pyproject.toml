@@ -35,6 +35,7 @@ extend-select = ["I", "E", "F", "W"]
 python_version = "3.11"
 strict = true
 ignore_missing_imports = true
+disable_error_code = ["unused-ignore"]
 
 [tool.coverage.run]
 branch = true
