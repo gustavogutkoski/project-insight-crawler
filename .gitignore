@@ -19,3 +19,18 @@ venv/
 env/
 
 *.sqlite3
+
+coverage.xml
+.coverage
+
+.venv/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+.coverage.*
+
+__pycache__/
+*$py.class
+*.py,cover
+*.cover
+nosetests.xml
