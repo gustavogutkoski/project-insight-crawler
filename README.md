@@ -23,6 +23,7 @@ documentation, training LLMs, and more.
 
 - **Python 3.11 or higher**
 - [**Poetry**](https://python-poetry.org/) for dependency and environment management
+- [**tree-sitter-java**](https://github.com/tree-sitter/tree-sitter-java) for parsing Java code
 
 Ensure you have Python 3.11+ installed. Then, install Poetry (if not already installed):
 
@@ -58,6 +59,21 @@ Clone the repository manually:
     git clone https://github.com/gustavogutkoski/project-insight-crawler.git
     cd project-insight-crawler
     poetry install
+```
+
+Also clone the Java grammar:
+```bash
+  git clone https://github.com/tree-sitter/tree-sitter-java.git
+```
+
+Export the env file with the path to the grammar:
+```bash
+  TREE_SITTER_JAVA_PATH=path/to/grammar/tree-sitter-java
+```
+
+Load the environment variables and build the grammar:
+```bash
+  poetry run build-grammar
 ```
 
 ---
@@ -99,6 +115,7 @@ crawler/
 ├── parser/        # Java file parsing logic
 ├── use_cases/     # Business logic (e.g. saving data)
 tests/             # Unit tests
+scripts/           # Utility scripts (e.g. build_grammar)
 pyproject.toml     # Dependencies and dev tool configuration
 ```
 

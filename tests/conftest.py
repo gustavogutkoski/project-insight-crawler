@@ -28,7 +28,7 @@ def sample_class_info() -> ClassInfo:
 
 @pytest.fixture  # type: ignore[misc]
 def persisted_class_info(
-        db_connection: sqlite3.Connection, sample_class_info: ClassInfo
+    db_connection: sqlite3.Connection, sample_class_info: ClassInfo
 ) -> ClassInfo:
     class_id = insert_class(db_connection, sample_class_info)
     sample_class_info.id = class_id

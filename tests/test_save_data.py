@@ -7,9 +7,7 @@ from crawler.use_cases.save_data import save_project_data
 
 
 def test_save_project_data(
-        db_connection: sqlite3.Connection,
-        sample_class_info: ClassInfo,
-        sample_method_info: MethodInfo
+    db_connection: sqlite3.Connection, sample_class_info: ClassInfo, sample_method_info: MethodInfo
 ) -> None:
     results = [(sample_class_info, [sample_method_info])]
 
@@ -28,8 +26,7 @@ def test_save_project_data(
 
 
 def test_save_project_data_with_no_methods(
-        db_connection: sqlite3.Connection,
-        sample_class_info: ClassInfo
+    db_connection: sqlite3.Connection, sample_class_info: ClassInfo
 ) -> None:
     results: List[Tuple[ClassInfo, List[MethodInfo]]] = [(sample_class_info, [])]
 

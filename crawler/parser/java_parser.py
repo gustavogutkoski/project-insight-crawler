@@ -37,7 +37,8 @@ def parse_java_file(file_path: str) -> List[Tuple[ClassInfo, List[MethodInfo]]]:
                 current_class = process_class(class_match, file_path, idx)
                 logger.debug(
                     f"Class found: {current_class.name} ({current_class.class_type}) "
-                    f"at line {current_class.line_number}")
+                    f"at line {current_class.line_number}"
+                )
                 method_list = []
 
             method_match = method_pattern.search(line)
@@ -46,11 +47,13 @@ def parse_java_file(file_path: str) -> List[Tuple[ClassInfo, List[MethodInfo]]]:
                     method_info = process_method(line, idx)
                     logger.debug(
                         f"Method found: {method_info.method_name} returns "
-                        f"{method_info.return_type} at line {method_info.line_number}")
+                        f"{method_info.return_type} at line {method_info.line_number}"
+                    )
                     method_list.append(method_info)
                 except ValueError:
-                    logger.error(f"Error parsing method in {file_path} "
-                                 f"at line {idx + 1}", exc_info=True)
+                    logger.error(
+                        f"Error parsing method in {file_path} at line {idx + 1}", exc_info=True
+                    )
 
     if current_class:
         results.append((current_class, method_list))

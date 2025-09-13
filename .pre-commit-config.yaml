@@ -15,6 +15,6 @@ repos:
     hooks:
       - id: pytest
         name: run pytest
-        entry: poetry run pytest -v
+        entry: bash -c 'export TREE_SITTER_JAVA_PATH=~/tree-sitter-java && poetry run pytest'
         language: system
         types: [ python ]

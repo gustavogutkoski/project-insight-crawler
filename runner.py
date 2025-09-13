@@ -27,17 +27,15 @@ def run_crawler(project_path: str, db_path: str = "crawler.db") -> None:
                     logger.debug(f"Parsed {len(results)} items from {file_path}")
                     save_project_data(conn, results)
                 except ValueError as e:
-                    logger.error(f"Parsing error in {file_path}: {e}",
-                                 exc_info=True)
+                    logger.error(f"Parsing error in {file_path}: {e}", exc_info=True)
                 except sqlite3.DatabaseError as e:
-                    logger.error(f"Database error when saving data from {file_path}: {e}",
-                                 exc_info=True)
+                    logger.error(
+                        f"Database error when saving data from {file_path}: {e}", exc_info=True
+                    )
                 except (OSError, IOError) as e:
-                    logger.error(f"File error with {file_path}: {e}",
-                                 exc_info=True)
+                    logger.error(f"File error with {file_path}: {e}", exc_info=True)
                 except Exception as e:
-                    logger.error(f"Unexpected error processing {file_path}: {e}",
-                                 exc_info=True)
+                    logger.error(f"Unexpected error processing {file_path}: {e}", exc_info=True)
                     raise
 
     conn.close()
