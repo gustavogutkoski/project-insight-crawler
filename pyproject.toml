@@ -16,8 +16,8 @@ tree-sitter = "^0.20.4"
 repository = "https://github.com/gustavogutkoski/project-insight-crawler"
 
 [tool.poetry.group.dev.dependencies]
-ruff = "^0.12.12"
-mypy = "^1.17.1"
+ruff = "^0.13.0"
+mypy = "^1.18.2"
 pre-commit = "^4.3.0"
 pytest = "^8.4.2"
 pytest-cov = "^7.0.0"
