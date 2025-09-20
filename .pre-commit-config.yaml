@@ -13,8 +13,14 @@ repos:
 
   - repo: local
     hooks:
+      - id: build-tree-sitter
+        name: build tree-sitter java grammar
+        entry: bash -c 'export TREE_SITTER_JAVA_PATH=$HOME/tree-sitter-java && poetry run python scripts/build_grammar.py'
+        language: system
+        pass_filenames: false
+
       - id: pytest
         name: run pytest
-        entry: bash -c 'export TREE_SITTER_JAVA_PATH=~/tree-sitter-java && poetry run pytest'
+        entry: bash -c 'export TREE_SITTER_JAVA_PATH=$HOME/tree-sitter-java && poetry run pytest'
         language: system
         types: [ python ]

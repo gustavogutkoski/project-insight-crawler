@@ -11,9 +11,18 @@ jobs:
     name: Run CI checks
     runs-on: ubuntu-latest
 
+    env:
+      TREE_SITTER_JAVA_PATH: ${{ github.workspace }}/tree-sitter-java
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Checkout tree-sitter-java
+        uses: actions/checkout@v4
+        with:
+          repository: tree-sitter/tree-sitter-java
+          path: tree-sitter-java
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -30,6 +39,9 @@ jobs:
 
       - name: Install dependencies
         run: poetry install
+
+      - name: Build Tree-sitter grammar
+        run: python scripts/build_grammar.py
 
       - name: Run linter (ruff)
         run: make lint

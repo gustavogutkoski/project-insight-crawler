@@ -14,7 +14,9 @@ if not JAVA_GRAMMAR_PATH:
     )
     sys.exit(1)
 
+
 def main() -> None:
     os.makedirs("build", exist_ok=True)
-    Language.build_library(LIB_PATH, [JAVA_GRAMMAR_PATH])
+    if JAVA_GRAMMAR_PATH:
+        Language.build_library(LIB_PATH, [JAVA_GRAMMAR_PATH])
     print(f"Grammar compiled in {LIB_PATH}")
