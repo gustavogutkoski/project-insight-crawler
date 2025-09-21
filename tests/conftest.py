@@ -67,16 +67,30 @@ def java_file(tmp_path: Path) -> Callable[[str, str], str]:
 
 
 @pytest.fixture  # type: ignore[misc]
-def java_class_simple() -> str:
+def java_class_empty() -> str:
+    return "public class EmptyClass {}"
+
+
+@pytest.fixture  # type: ignore[misc]
+def java_class_multiple() -> str:
+    return """
+    public class First { public void one() {} }
+    public class Second { public void two() {} }
+    """
+
+
+@pytest.fixture  # type: ignore[misc]
+def java_class_with_fields() -> str:
     return """
     public class MyClass {
-        public void myMethod() {}
+        private static int counter;
+        protected String name;
     }
     """
 
 
 @pytest.fixture  # type: ignore[misc]
-def java_class_with_return_type() -> str:
+def java_class_with_method() -> str:
     return """
     public class Calculator {
         public int add(int a, int b) { return a + b; }
@@ -114,3 +128,8 @@ def java_class_with_static_method() -> str:
 @pytest.fixture  # type: ignore[misc]
 def java_code_invalid() -> str:
     return "this is not valid java code"
+
+
+@pytest.fixture  # type: ignore[misc]
+def java_enum() -> str:
+    return "public enum MyEnum { ONE, TWO, THREE; }"

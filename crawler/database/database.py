@@ -1,6 +1,7 @@
 import sqlite3
 
 from crawler.models.class_info import ClassInfo
+from crawler.models.field_info import FieldInfo
 from crawler.models.method_info import MethodInfo
 
 
@@ -26,6 +27,18 @@ def create_tables(conn: sqlite3.Connection) -> None:
             return_type TEXT,
             modifier TEXT,
             is_static BOOLEAN,
+            FOREIGN KEY (class_id) REFERENCES classes(id) ON DELETE CASCADE
+        )
+    """)
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS fields (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            class_id INTEGER,
+            name TEXT,
+            type TEXT,
+            modifier TEXT,
+            is_static BOOLEAN,
+            line_number INTEGER,
             FOREIGN KEY (class_id) REFERENCES classes(id) ON DELETE CASCADE
         )
     """)
@@ -82,3 +95,25 @@ def insert_method(conn: sqlite3.Connection, method_info: MethodInfo) -> None:
         ),
     )
     conn.commit()
+
+
+def insert_field(conn: sqlite3.Connection, field_info: FieldInfo) -> int:
+    cursor = conn.cursor()
+    cursor.execute(
+        """
+        INSERT INTO fields (class_id, name, type, modifier, is_static, line_number)
+        VALUES (?, ?, ?, ?, ?, ?)
+        """,
+        (
+            field_info.class_id,
+            field_info.name,
+            field_info.type,
+            field_info.modifier,
+            field_info.is_static,
+            field_info.line_number,
+        ),
+    )
+    conn.commit()
+    field_id = cursor.lastrowid
+    assert field_id is not None
+    return field_id
